@@ -18,10 +18,25 @@ let winner;
 
 
 /*----- cached elements  -----*/
+const message = document.querySelector('h1')
+const button = document.querySelector('button')
+const markers = document.getElementById('markers')
 
 
 /*----- event listeners -----*/
-
+markers.addEventListener('click', function(evt){
+    const index = Array.from(evt.target.parentNode.children).indexOf(evt.target)
+    const col = board[index]
+    for (let i = 0; i < col.length; i++) {
+        if (col[i] === 0) {
+            col[i] = turn;
+            break;
+        }
+    }
+    turn *= -1;
+    render();
+    checkForWinner();
+  })
 
 /*----- functions -----*/
 
@@ -41,5 +56,59 @@ function init() {
 render();
 }
 function render() {
-    
+    renderBoard();
+    renderMessage();
+    renderControls();
+}
+function renderBoard() {
+    for (let colIdx = 0; colIdx < board.length; colIdx++) {
+        const col = board[colIdx];
+
+        for (let rowIdx = 0; rowIdx < col.length; rowIdx++) {
+            const cellEl = `c${colIdx}r${rowIdx}`;
+
+            let color;
+            if (col[rowIdx] === 1) {
+                color = 'purple';
+            } else if (col[rowIdx] === -1) {
+                color = 'orange'
+            } else {
+                color = 'white'
+            }
+            document.getElementById (cellEl).style.backgroundColor = color;
+        }
+    }
+}
+
+function renderMessage() {
+    if (turn === 1) {
+        message.innerHTML = `Purple's Turn`
+    } else if (turn === -1) {
+        message.innerHTML = `Orange's Turn`
+    }
+}
+
+function renderControls() {
+    if (winner === null) {
+        button.style.display='none'
+    } else if (winner === 1 || -1) {
+        button.style.display='block'
+    } else if (winner === 'T') {
+        button.style.display='inline'
+    }
+}
+
+function checkForWinner() {
+    for (let col = 0; col < board.length; col++) {
+        for (let row = 0; row <= board.length - 4; row++) {
+          const cell = board[row][col];
+          if (cell !== 0 &&
+              cell === board[row + 1][col] &&
+              cell === board[row + 2][col] &&
+              cell === board[row + 3][col]) {
+            return cell;
+          }
+        }
+      }
+      winner = cell
 }
