@@ -34,8 +34,10 @@ markers.addEventListener('click', function(evt){
         }
     }
     turn *= -1;
+    winner = checkForWinner();
     render();
-    checkForWinner();
+    
+    
   })
 
 /*----- functions -----*/
@@ -81,7 +83,9 @@ function renderBoard() {
 }
 
 function renderMessage() {
-    if (turn === 1) {
+    if (winner === 1 || winner === -1){
+        message.innerHTML = 'Congrats!'
+    } else if (turn === 1) {
         message.innerHTML = `Purple's Turn`
     } else if (turn === -1) {
         message.innerHTML = `Orange's Turn`
@@ -91,24 +95,24 @@ function renderMessage() {
 function renderControls() {
     if (winner === null) {
         button.style.display='none'
-    } else if (winner === 1 || -1) {
+    } else if (winner === 1 || winner === -1) {
         button.style.display='block'
     } else if (winner === 'T') {
-        button.style.display='inline'
+        button.style.display='block'
     }
 }
 
 function checkForWinner() {
     for (let col = 0; col < board.length; col++) {
-        for (let row = 0; row <= board.length - 4; row++) {
-          const cell = board[row][col];
+        for (let row = 0; row < board[col].length; row++) {
+          const cell = board[col][row];
           if (cell !== 0 &&
-              cell === board[row + 1][col] &&
-              cell === board[row + 2][col] &&
-              cell === board[row + 3][col]) {
-            return cell;
+              cell === board[col][row + 1] &&
+              cell === board[col][row + 2] &&
+              cell === board[col][row + 3]) {
+            return cell
           }
         }
       }
-      winner = cell
+    return null
 }
