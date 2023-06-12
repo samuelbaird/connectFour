@@ -25,6 +25,9 @@ const markers = document.getElementById('markers')
 
 /*----- event listeners -----*/
 markers.addEventListener('click', function(evt){
+    if (evt.target === 'marker') {
+        return;
+    }
     const index = Array.from(evt.target.parentNode.children).indexOf(evt.target)
     const col = board[index]
     for (let i = 0; i < col.length; i++) {
@@ -36,9 +39,18 @@ markers.addEventListener('click', function(evt){
     turn *= -1;
     winner = checkForWinner();
     render();
-    
-    
   })
+
+  button.onclick = function(){
+    for (let col = 0; col < board.length; col++) {
+        for (let row = 0; row < board[col].length; row++) {
+          board[col][row] = 0;
+          winner = null;
+          turn = 1;
+          render();
+          }
+        }
+      }
 
 /*----- functions -----*/
 
@@ -90,6 +102,8 @@ function renderMessage() {
     } else if (turn === -1) {
         message.innerHTML = `Orange's Turn`
     }
+    else if (turn === "T")
+    message.innerText = "It's a TIE!"
 }
 
 function renderControls() {
@@ -107,6 +121,7 @@ function checkForWinner() {
         for (let row = 0; row < board[col].length; row++) {
           const cell = board[col][row];
           if (cell !== 0 &&
+            row + 3 < board.length &&
               cell === board[col][row + 1] &&
               cell === board[col][row + 2] &&
               cell === board[col][row + 3]) {
@@ -114,5 +129,48 @@ function checkForWinner() {
           }
         }
       }
-    return null
-}
+      for (let col = 0; col < board.length; col++) {
+        for (let row = 0; row < board[col].length; row++) {
+          const cell = board[col][row];
+          if (cell !== 0 &&
+              col + 3 < board.length &&
+              cell === board[col + 1][row] &&
+              cell === board[col + 2][row] &&
+              cell === board[col + 3][row]) {
+            return cell
+          }
+        }
+      }
+    for (let col = 0; col < board.length - 3; col++) {
+        for (let row = 0; row < board[col].length - 3; row++) {
+          const cell = board[col][row];
+          if (cell !== 0 &&
+              cell === board[col + 1][row + 1] &&
+              cell === board[col + 2][row + 2] &&
+              cell === board[col + 3][row + 3]) {
+            return cell
+          }
+        }
+      }
+      for (let col = 0; col < board.length - 3; col++) {
+        for (let row = 3; row < board[col].length - 3; row++) {
+          const cell = board[col][row];
+          if (cell !== 0 &&
+              cell === board[col + 1][row - 1] &&
+              cell === board[col + 2][row - 2] &&
+              cell === board[col + 3][row - 3]) {
+            return cell
+          }
+        }
+      }
+
+      for (let row = 0; row < board.length; row++) {
+        for (let col = 0; col < board[row].length; col++) {
+          if (board[row][col] === 0) {
+            return null; 
+          }
+        }
+      }
+    
+      return 'T';
+    }
