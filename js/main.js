@@ -25,7 +25,7 @@ const markers = document.getElementById('markers')
 
 /*----- event listeners -----*/
 markers.addEventListener('click', function(evt){
-    if (evt.target === 'marker') {
+    if (evt.target === 'markers') {
         return;
     }
     const index = Array.from(evt.target.parentNode.children).indexOf(evt.target)
